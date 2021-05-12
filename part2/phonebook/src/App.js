@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Notification from './components/Notification'
 import Filter from './components/Filter'
 import AddNew from './components/AddNew'
 import Persons from './components/Persons'
@@ -9,6 +10,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
+  const [ newMessage, setNewMessage ] = useState(null)
+  const [ messageType, setMessageType ] = useState(null)
 
   useEffect(() => {
     personService
@@ -32,7 +35,8 @@ const App = () => {
     }
     if (persons.map((person) => person.name)
       .includes(newName)) {
-        const message = `${newName} is already in the phonebook. Replace the old number with a new one?`
+        const message = `${newName} is already in the phonebook. ` +
+          `Replace the old number with a new one?`
         if (window.confirm(message)) {
           const oldPerson = persons.find(p => p.name === newName)
           personService
@@ -41,6 +45,28 @@ const App = () => {
               setPersons(persons
                 .map(person => person.id !== returnedPerson.id ?
                   person : returnedPerson))
+              setNewName('')
+              setNewNumber('')
+              setMessageType('success')
+              setNewMessage(
+                `Edited ${personObject.name}`
+              )
+              setTimeout(() => {
+                setNewMessage(null)
+                setMessageType(null)
+              }, 4000)
+            })
+            .catch(error => {
+              setMessageType('error')
+              setNewMessage(
+                `Can't edit ${personObject.name} because the contact has ` +
+                `been deleted. Try again to add a new contact.`
+              )
+              setPersons(persons.filter(person => person.id !== oldPerson.id))
+              setTimeout(() => {
+                setNewMessage(null)
+                setMessageType(null)
+              }, 4000)
             })
         }
     } else {
@@ -50,6 +76,14 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessageType('success')
+          setNewMessage(
+            `Added ${personObject.name}`
+          )
+          setTimeout(() => {
+            setNewMessage(null)
+            setMessageType(null)
+          }, 4000)
         })
     }
   }
@@ -61,6 +95,14 @@ const App = () => {
       .deletePerson(id)
       .then(returnedPerson => {
         setPersons(persons.filter(person => person.id !== id))
+        setMessageType('success')
+        setNewMessage(
+          `Deleted ${personToDelete.name}`
+        )
+        setTimeout(() => {
+          setNewMessage(null)
+          setMessageType(null)
+        }, 4000)
       })
     }
   }
@@ -72,6 +114,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification type={messageType} message={newMessage} />
       <Filter value={newSearch} onChange={handleSearchChange} />
       <h3>Add new</h3>
       <AddNew
