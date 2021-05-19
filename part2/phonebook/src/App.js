@@ -33,76 +33,60 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    personService
-      .create(personObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        setMessageType('success')
-        setNewMessage(
-          `Added ${personObject.name}`
-        )
-        setTimeout(() => {
-          setNewMessage(null)
-          setMessageType(null)
-        }, 4000)
-      })
+    if (persons.map((person) => person.name)
+      .includes(newName)) {
+        const message = `${newName} is already in the phonebook. ` +
+          `Replace the old number with a new one?`
+        if (window.confirm(message)) {
+          const oldPerson = persons.find(p => p.name === newName)
+          personService
+            .replacePerson(personObject, oldPerson.id)
+            .then(returnedPerson => {
+              setPersons(persons
+                .map(person => person.id !== returnedPerson.id ?
+                  person : returnedPerson))
+              setNewName('')
+              setNewNumber('')
+              setMessageType('success')
+              setNewMessage(
+                `Edited ${personObject.name}`
+              )
+              setTimeout(() => {
+                setNewMessage(null)
+                setMessageType(null)
+              }, 4000)
+            })
+            .catch(error => {
+              setMessageType('error')
+              setNewMessage(
+                `Can't edit ${personObject.name} because the contact has ` +
+                `been deleted. Try again to add a new contact.`
+              )
+              setPersons(persons.filter(person => person.id !== oldPerson.id))
+              setTimeout(() => {
+                setNewMessage(null)
+                setMessageType(null)
+              }, 4000)
+            })
+        }
+    } else {
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+          setMessageType('success')
+          setNewMessage(
+            `Added ${personObject.name}`
+          )
+          setTimeout(() => {
+            setNewMessage(null)
+            setMessageType(null)
+          }, 4000)
+        })
     }
-    // if (persons.map((person) => person.name)
-    //   .includes(newName)) {
-    //     const message = `${newName} is already in the phonebook. ` +
-    //       `Replace the old number with a new one?`
-    //     if (window.confirm(message)) {
-    //       const oldPerson = persons.find(p => p.name === newName)
-    //       personService
-    //         .replacePerson(personObject, oldPerson.id)
-    //         .then(returnedPerson => {
-    //           setPersons(persons
-    //             .map(person => person.id !== returnedPerson.id ?
-    //               person : returnedPerson))
-    //           setNewName('')
-    //           setNewNumber('')
-    //           setMessageType('success')
-    //           setNewMessage(
-    //             `Edited ${personObject.name}`
-    //           )
-    //           setTimeout(() => {
-    //             setNewMessage(null)
-    //             setMessageType(null)
-    //           }, 4000)
-    //         })
-    //         .catch(error => {
-    //           setMessageType('error')
-    //           setNewMessage(
-    //             `Can't edit ${personObject.name} because the contact has ` +
-    //             `been deleted. Try again to add a new contact.`
-    //           )
-    //           setPersons(persons.filter(person => person.id !== oldPerson.id))
-    //           setTimeout(() => {
-    //             setNewMessage(null)
-    //             setMessageType(null)
-    //           }, 4000)
-    //         })
-    //     }
-    // } else {
-    //   personService
-    //     .create(personObject)
-    //     .then(returnedPerson => {
-    //       setPersons(persons.concat(returnedPerson))
-    //       setNewName('')
-    //       setNewNumber('')
-    //       setMessageType('success')
-    //       setNewMessage(
-    //         `Added ${personObject.name}`
-    //       )
-    //       setTimeout(() => {
-    //         setNewMessage(null)
-    //         setMessageType(null)
-    //       }, 4000)
-    //     })
-    // }
-    // }
+  }
 
   const handleDeletePerson = (id) => () => {
     const personToDelete = persons.find(p => p.id === id)
