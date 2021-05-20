@@ -58,11 +58,15 @@ const App = () => {
             })
             .catch(error => {
               setMessageType('error')
-              setNewMessage(
-                `Can't edit ${personObject.name} because the contact has ` +
-                `been deleted. Try again to add a new contact.`
-              )
-              setPersons(persons.filter(person => person.id !== oldPerson.id))
+              if (error.response) {
+                setNewMessage(error.response.data.error)
+              } else {
+                setNewMessage(
+                  `Can't edit ${personObject.name} because the contact has ` +
+                  `been deleted. Try again to add a new contact.`
+                )
+                setPersons(persons.filter(person => person.id !== oldPerson.id))
+              }
               setTimeout(() => {
                 setNewMessage(null)
                 setMessageType(null)
@@ -80,6 +84,14 @@ const App = () => {
           setNewMessage(
             `Added ${personObject.name}`
           )
+          setTimeout(() => {
+            setNewMessage(null)
+            setMessageType(null)
+          }, 4000)
+        })
+        .catch(error => {
+          setMessageType('error')
+          setNewMessage(`${error.response.data.error}`)
           setTimeout(() => {
             setNewMessage(null)
             setMessageType(null)

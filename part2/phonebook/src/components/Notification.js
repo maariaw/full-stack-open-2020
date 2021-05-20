@@ -4,7 +4,6 @@ const Notification = ({type, message}) => {
     if (message === null) {
         return null
     }
-    console.log(message)
     const style = {
         background: 'gainsboro',
         borderStyle: 'solid',
