@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Forever yours",
-  "author": "Jane Austen",
+  "title": "My Fair Lady",
+  "author": "Hippo Potamus",
   "url": "this is a website",
   "likes": 0
 }
