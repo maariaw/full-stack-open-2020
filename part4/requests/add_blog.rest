@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Melody Festival",
-  "author": "Abba",
+  "title": "Finally there",
+  "author": "Me",
   "url": "this is a website",
   "likes": 0
 }
