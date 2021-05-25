@@ -17,7 +17,6 @@ const favoriteBlog = (blogs) => {
   const result = blogs.length === 0
     ? null
     : blogs.reduce(mostLikedFinder, blogs[0])
-  console.log(result)
   return result
 }
 
