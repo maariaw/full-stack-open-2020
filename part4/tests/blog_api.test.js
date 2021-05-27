@@ -56,6 +56,27 @@ describe('posting', () => {
 
     expect(postedBlog.body.likes).toBe(0)
   })
+
+  test('a blog with missing properties does not go through', async () => {
+    const blogMissingTitle = {
+      author: 'Forgetful Fanny',
+      url: 'this is a website'
+    }
+    const blogMissingUrl = {
+      author: 'Scatterbrain Sam',
+      title: 'Where is the internet?'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(blogMissingTitle)
+      .expect(400)
+
+    await api
+      .post('/api/blogs')
+      .send(blogMissingUrl)
+      .expect(400)
+  })
 })
 
 afterAll(() => {
