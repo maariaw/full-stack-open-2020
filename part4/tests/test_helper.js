@@ -38,11 +38,20 @@ const oneBlog = [
   }
 ]
 
+const blogToPost = {
+  title: 'From Never-Never to Narnia',
+  author: 'Julius Dresden',
+  url: 'this is a website',
+}
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
 }
 
 module.exports = {
-  initialBlogs, oneBlog, blogsInDb
+  initialBlogs,
+  oneBlog,
+  blogToPost,
+  blogsInDb
 }

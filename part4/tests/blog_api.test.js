@@ -30,24 +30,32 @@ test('identifier property of a blog post is named "id"', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
-test('a valid blog can be added', async () => {
-  const newBlog = {
-    title: helper.oneBlog[0].title,
-    author: helper.oneBlog[0].author,
-    url: helper.oneBlog[0].url
-  }
+describe('posting', () => {
+  test('a valid blog adds a blog', async () => {
+    const newBlog = helper.blogToPost
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
-  const blogsAtEnd = await helper.blogsInDb()
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
-  const contents = blogsAtEnd.map(b => b.title)
-  expect(contents).toContain(helper.oneBlog[0].title)
+    const contents = blogsAtEnd.map(b => b.title)
+    expect(contents).toContain(helper.blogToPost.title)
+  })
+
+  test('a blog defaults a missing likes property to zero', async () => {
+    const newBlog = helper.blogToPost
+
+    const postedBlog = await api
+      .post('/api/blogs')
+      .send(newBlog)
+
+    expect(postedBlog.body.likes).toBe(0)
+  })
 })
 
 afterAll(() => {
