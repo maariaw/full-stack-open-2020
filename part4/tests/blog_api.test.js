@@ -79,6 +79,32 @@ describe('posting', () => {
   })
 })
 
+describe('deleting', () => {
+  test('an existing blog removes the blog', async () => {
+    const initializedBlogs = await helper.blogsInDb()
+    const blogToRemove = initializedBlogs[1]
+
+    await api
+      .delete(`/api/blogs/${blogToRemove.id}`)
+      .expect(204)
+
+    const blogsNow = await helper.blogsInDb()
+
+    expect(blogsNow).toHaveLength(helper.initialBlogs.length - 1)
+
+    const titles = blogsNow.map(b => b.title)
+    expect(titles).not.toContain(blogToRemove.title)
+  })
+
+  test('a non-existing blog returns status code 204', async () => {
+    const validId = await helper.nonExistentId()
+
+    await api
+      .delete(`/api/blogs/${validId}`)
+      .expect(204)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
