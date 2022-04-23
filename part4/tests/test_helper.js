@@ -27,6 +27,17 @@ const initialBlogs = [
   }
 ]
 
+const oneBlog = [
+  {
+    _id: '60a793fe1fe845a711cf58a7',
+    title: 'My Fair Lady',
+    author: 'Hippo Potamus',
+    url: 'this is a website',
+    likes: 7,
+    __v: 0
+  }
+]
+
 const blogToPost = {
   title: 'From Never-Never to Narnia',
   author: 'Julius Dresden',
@@ -53,6 +64,7 @@ const nonExistentId = async () => {
 
 module.exports = {
   initialBlogs,
+  oneBlog,
   blogToPost,
   blogsInDb,
   nonExistentId
