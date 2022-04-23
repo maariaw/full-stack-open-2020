@@ -1,0 +1,7 @@
+PUT http://localhost:3003/api/blogs/60a79ea79680e2b1f8a353e6
+Content-Type: application/json
+
+{
+  "title": "How to check for clickbait",
+  "likes": 3
+}

@@ -77,6 +77,65 @@ describe('posting', () => {
   })
 })
 
+describe('updating the properties of an existing blog', () => {
+  test('succeeds with valid properties', async () => {
+    const initializedBlogs = await helper.blogsInDb()
+    const blogToChange = initializedBlogs[1]
+
+    const validUpdate = {
+      author: 'Ray Redo',
+      title: 'I was mistaken',
+      url: 'this is a website',
+      likes: 3
+    }
+
+    await api
+      .put(`/api/blogs/${blogToChange.id}`)
+      .send(validUpdate)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+    const updatedBlog = await Blog.findById(blogToChange.id)
+
+    expect(updatedBlog.title).toBe(validUpdate.title)
+    expect(updatedBlog.author).toBe(validUpdate.author)
+    expect(updatedBlog.url).toBe(validUpdate.url)
+    expect(updatedBlog.likes).toBe(validUpdate.likes)
+
+    // const titles = blogsAtEnd.map(b => b.title)
+    // expect(titles).toContain(validUpdate.title)
+
+    // const authors = blogsAtEnd.map(b => b.author)
+    // expect(authors).toContain(validUpdate.author)
+
+    // const urls = blogsAtEnd.map(b => b.url)
+    // expect(urls).toContain(validUpdate.url)
+  })
+
+  test('retains unchanged properties', async () => {
+    const initializedBlogs = await helper.blogsInDb()
+    const blogToChange = initializedBlogs[1]
+
+    const partialUpdate = {
+      likes: 4,
+    }
+
+    await api
+      .put(`/api/blogs/${blogToChange.id}`)
+      .send(partialUpdate)
+      .expect(200)
+
+    const updatedBlog = await Blog.findById(blogToChange.id)
+
+    expect(updatedBlog.title).toBe(blogToChange.title)
+    expect(updatedBlog.author).toBe(blogToChange.author)
+    expect(updatedBlog.url).toBe(blogToChange.url)
+    expect(updatedBlog.likes).toBe(partialUpdate.likes)
+  })
+})
+
 describe('deleting', () => {
   test('an existing blog removes the blog', async () => {
     const initializedBlogs = await helper.blogsInDb()
