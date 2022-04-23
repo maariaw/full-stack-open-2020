@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const app = require('../app')
 const api = supertest(app)
+const User = require('../models/user')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
 
@@ -159,6 +161,126 @@ describe('deleting', () => {
     await api
       .delete(`/api/blogs/${validId}`)
       .expect(204)
+  })
+})
+
+describe('with one initial user in db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('huonosalasana', 10)
+    const user = new User({ username: 'hyyppä', passwordHash })
+
+    await user.save()
+  })
+
+  test('a new user can be created with another username', async () => {
+    const initialUsers = await helper.usersInDb()
+
+    const newUser = {
+      username: 'heppu',
+      name: 'Heppu Hyppönen',
+      password: 'h1t0nHYVÄslsn'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersNow = await helper.usersInDb()
+    expect(usersNow).toHaveLength(initialUsers.length + 1)
+
+    const usernames = usersNow.map(user => user.username)
+    expect(usernames).toContain(newUser.username)
+  })
+
+  test('adding user without username and password results in error', async () => {
+    const initialUsers = await helper.usersInDb()
+
+    const missingUsername = {
+      name: 'Heppu Hyppönen',
+      password: 'h1t0nHYVÄslsn'
+    }
+    const missingPassword = {
+      username: 'heppu',
+      name: 'Heppu Hoppinen'
+    }
+
+    const resultUsername = await api
+      .post('/api/users')
+      .send(missingUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(resultUsername.body.error).toContain('username missing')
+
+    const resultPassword = await api
+      .post('/api/users')
+      .send(missingPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(resultPassword.body.error).toContain('password missing')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(initialUsers)
+  })
+
+  test('adding user with username or password too short results in error', async () => {
+    const initialUsers = await helper.usersInDb()
+
+    const shortUsername = {
+      username: 'hh',
+      name: 'Heppu Hyppönen',
+      password: 'h1t0nHYVÄslsn'
+    }
+    const shortPassword = {
+      username: 'heppu',
+      name: 'Heppu Hoppinen',
+      password: 'pw'
+    }
+
+    const resultUsername = await api
+      .post('/api/users')
+      .send(shortUsername)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(resultUsername.body.error).toContain('username under 3 characters')
+
+    const resultPassword = await api
+      .post('/api/users')
+      .send(shortPassword)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(resultPassword.body.error).toContain('password under 3 characters')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(initialUsers)
+  })
+
+  test('adding user with already existing username results in error', async () => {
+    const initialUsers = await helper.usersInDb()
+
+    const newUser = {
+      username: 'hyyppä',
+      name: 'Heini Heppunen',
+      password: 'hsdhf878dggd((/hfs',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('username must be unique')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toEqual(initialUsers)
   })
 })
 
