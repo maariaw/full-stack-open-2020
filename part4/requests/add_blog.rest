@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNpbHZlciIsImlkIjoiNjI2NDVkMjJmOTdmYjAwMjE3OTdlNjhhIiwiaWF0IjoxNjUwODY1ODkwfQ.Bhih5Kl7GftsWg1xeZjYVfldnyJOy-AQhIT1GGASpqQ
 
 {
-  "title": "This blog has a user maybe",
-  "author": "Manny Melon",
+  "title": "This is an authorized blog",
+  "author": "Goody Twoshoes",
   "url": "this is a website",
-  "likes": 6
+  "likes": 1
 }
