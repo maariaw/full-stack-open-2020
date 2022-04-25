@@ -7,9 +7,26 @@ const User = require('../models/user')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
 
+let authorization
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  const username = 'hyyppä'
+  const password = 'huonosalasana'
+  const passwordHash = await bcrypt.hash(password, 10)
+  const user = new User({ username: username, passwordHash })
+  const savedUser = await user.save()
+
+  const response = await api
+    .post('/api/login')
+    .send({ username, password })
+
+  authorization = `Bearer ${response.body.token}`
+
   for (let blog of helper.initialBlogs) {
+    blog.user = savedUser._id
     let blogObject = new Blog(blog)
     await blogObject.save()
   }
@@ -36,6 +53,7 @@ describe('posting', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', authorization)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -52,6 +70,7 @@ describe('posting', () => {
 
     const postedBlog = await api
       .post('/api/blogs')
+      .set('Authorization', authorization)
       .send(newBlog)
 
     expect(postedBlog.body.likes).toBe(0)
@@ -69,11 +88,13 @@ describe('posting', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', authorization)
       .send(blogMissingTitle)
       .expect(400)
 
     await api
       .post('/api/blogs')
+      .set('Authorization', authorization)
       .send(blogMissingUrl)
       .expect(400)
   })
@@ -105,15 +126,6 @@ describe('updating the properties of an existing blog', () => {
     expect(updatedBlog.author).toBe(validUpdate.author)
     expect(updatedBlog.url).toBe(validUpdate.url)
     expect(updatedBlog.likes).toBe(validUpdate.likes)
-
-    // const titles = blogsAtEnd.map(b => b.title)
-    // expect(titles).toContain(validUpdate.title)
-
-    // const authors = blogsAtEnd.map(b => b.author)
-    // expect(authors).toContain(validUpdate.author)
-
-    // const urls = blogsAtEnd.map(b => b.url)
-    // expect(urls).toContain(validUpdate.url)
   })
 
   test('retains unchanged properties', async () => {
@@ -145,6 +157,7 @@ describe('deleting', () => {
 
     await api
       .delete(`/api/blogs/${blogToRemove.id}`)
+      .set('Authorization', authorization)
       .expect(204)
 
     const blogsNow = await helper.blogsInDb()
@@ -160,20 +173,12 @@ describe('deleting', () => {
 
     await api
       .delete(`/api/blogs/${validId}`)
+      .set('Authorization', authorization)
       .expect(204)
   })
 })
 
 describe('with one initial user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-
-    const passwordHash = await bcrypt.hash('huonosalasana', 10)
-    const user = new User({ username: 'hyyppä', passwordHash })
-
-    await user.save()
-  })
-
   test('a new user can be created with another username', async () => {
     const initialUsers = await helper.usersInDb()
 
