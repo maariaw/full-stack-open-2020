@@ -98,6 +98,16 @@ describe('posting', () => {
       .send(blogMissingUrl)
       .expect(400)
   })
+
+  test('without an auth token fails with status code 401', async () => {
+    const newBlog = helper.blogToPost
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', '')
+      .send(newBlog)
+      .expect(401)
+  })
 })
 
 describe('updating the properties of an existing blog', () => {
