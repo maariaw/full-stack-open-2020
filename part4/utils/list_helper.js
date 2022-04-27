@@ -1,3 +1,5 @@
+const lodash = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -20,8 +22,21 @@ const favoriteBlog = (blogs) => {
   return result
 }
 
+const mostBlogs = (blogsArray) => {
+  const blogsByAuthor = lodash.countBy(blogsArray, (blog) => blog.author)
+  const formattedAuthors = Object
+    .keys(blogsByAuthor)
+    .map(a => ({ author: a, blogs: blogsByAuthor[a] }))
+  const maxBlogs = blogsArray.length === 0
+    ? null
+    : lodash.maxBy(formattedAuthors, 'blogs')
+
+  return maxBlogs
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
