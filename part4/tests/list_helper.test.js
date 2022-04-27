@@ -41,7 +41,7 @@ describe('favoriteBlog', () => {
   })
 })
 
-describe('mostblogs', () => {
+describe('mostBlogs', () => {
   test('of an array of blogs returns the author of most blogs and the number', () => {
     const result = listHelper.mostBlogs(helper.authorBlogs)
     expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
@@ -54,6 +54,23 @@ describe('mostblogs', () => {
 
   test('of array with one blog returns that author', () => {
     const result = listHelper.mostBlogs(helper.oneBlog)
-    expect(result).toEqual({ author: helper.oneBlog[0].author, blogs: 1 })
+    expect(result).toEqual({ author: 'Hippo Potamus', blogs: 1 })
+  })
+})
+
+describe('mostLikes', () => {
+  test('of an array of blogs returns the author with most likes and the number', () => {
+    const result = listHelper.mostLikes(helper.authorBlogs)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 })
+  })
+
+  test('of an empty array returns null', () => {
+    const result = listHelper.mostLikes([])
+    expect(result).toBe(null)
+  })
+
+  test('of array with one blog returns that author', () => {
+    const result = listHelper.mostLikes(helper.oneBlog)
+    expect(result).toEqual({ author: 'Hippo Potamus', likes: 7 })
   })
 })
