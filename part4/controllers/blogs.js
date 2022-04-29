@@ -72,7 +72,8 @@ blogsRouter.put('/:id', async (request, response) => {
     author: body.author || oldBlog.author,
     title: body.title || oldBlog.title,
     url: body.url || oldBlog.url,
-    likes: body.likes || oldBlog.likes
+    likes: body.likes || oldBlog.likes,
+    user: oldBlog.user
   }
 
   const updatedBlog = await Blog
