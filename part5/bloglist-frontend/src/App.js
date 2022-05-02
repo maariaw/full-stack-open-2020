@@ -15,7 +15,10 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService
+      .getAll()
+      .then(blogs => blogs.sort(sortByLikes))
+      .then(blogs =>
       setBlogs( blogs )
     )  
   }, [])
@@ -28,6 +31,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const sortByLikes = (a, b) => b.likes - a.likes
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -116,6 +121,7 @@ const App = () => {
         { ...blogToLike, likes: newLikes },
         ...blogs.slice(indexOfBlogToLike + 1)
       ]
+      newBlogs.sort(sortByLikes)
       setBlogs(newBlogs)
     } catch (exception) {
       setNotification('Error: Failed to add like')
