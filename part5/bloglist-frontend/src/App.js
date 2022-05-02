@@ -62,6 +62,7 @@ const App = () => {
   }
 
   const addBlog = async (blogObject) => {
+    // Add try-catch
     const newBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(newBlog))
     blogFormRef.current.toggleVisibility()
@@ -103,6 +104,27 @@ const App = () => {
     </form>
   )
 
+  const giveLike = async (id) => {
+    const indexOfBlogToLike = blogs.findIndex(b => b.id === id)
+    const blogToLike = blogs[indexOfBlogToLike]
+    const newLikes = blogToLike.likes + 1
+    const change = { likes: newLikes }
+    try {
+      await blogService.update(id, change)
+      const newBlogs = [
+        ...blogs.slice(0, indexOfBlogToLike),
+        { ...blogToLike, likes: newLikes },
+        ...blogs.slice(indexOfBlogToLike + 1)
+      ]
+      setBlogs(newBlogs)
+    } catch (exception) {
+      setNotification('Error: Failed to add like')
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -123,7 +145,11 @@ const App = () => {
       <br/>
       <div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLike={() => giveLike(blog.id)}
+          />
         )}
       </div>
       
