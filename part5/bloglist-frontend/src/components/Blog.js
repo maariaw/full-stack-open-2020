@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
   const [viewDetails, setViewDetails] = useState(false)
 
   const toggleDetail = () => {
@@ -16,7 +16,8 @@ const Blog = ({ blog, handleLike }) => {
   }
 
   const buttonStyle = {
-    marginLeft: 10
+    marginLeft: 10,
+    marginBottom: 5
   }
 
   if (!viewDetails) {
@@ -30,22 +31,30 @@ const Blog = ({ blog, handleLike }) => {
     )
   }
 
-  return (
+  const details = (
     <div style={blogStyle}>
       <p>
         <b>{blog.title}</b> by {blog.author}
-      <button onClick={toggleDetail} style={buttonStyle}>Hide</button>
+        <button onClick={toggleDetail} style={buttonStyle}>Hide</button>
       </p>
       <p>{blog.url}</p>
       <p>
         {blog.likes}
-        <button
-          style={buttonStyle}
-          onClick={handleLike}>Like</button>
-        </p>
+        <button style={buttonStyle} onClick={handleLike}>
+            Like
+        </button>
+      </p>
       <p>{blog.user.name}</p>
+      { isCreator &&
+        <button style={buttonStyle} onClick={handleRemove}>
+          Remove
+        </button>
+      }
     </div>
   )
+
+
+  return details
 }
 
 export default Blog

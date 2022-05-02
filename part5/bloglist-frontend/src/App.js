@@ -138,6 +138,29 @@ const App = () => {
     }
   }
 
+  const handleRemove = async (id) => {
+    const blogToDelete = blogs.find(b => b.id === id)
+    const confirmText = `
+    Are you sure you want to remove this blog:
+    ${blogToDelete.title} by ${blogToDelete.author}
+    `
+    if (window.confirm(confirmText)) {
+      try {
+        await blogService.remove(id)
+        setBlogs(blogs.filter(b => b.id !== id))
+        setNotification(`Removed blog`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      } catch (exception) {
+        setNotification('Error: Failed to remove blog')
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+      }
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -162,6 +185,8 @@ const App = () => {
             key={blog.id}
             blog={blog}
             handleLike={() => giveLike(blog.id)}
+            isCreator={user.username === blog.user.username}
+            handleRemove={() => handleRemove(blog.id)}
           />
         )}
       </div>
