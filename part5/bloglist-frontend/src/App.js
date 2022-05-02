@@ -67,14 +67,21 @@ const App = () => {
   }
 
   const addBlog = async (blogObject) => {
-    // Add try-catch
-    const newBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(newBlog))
-    blogFormRef.current.toggleVisibility()
-    setNotification(`Added new blog: "${blogObject.title}" by ${blogObject.author}`)
+    try {
+      const newBlog = await blogService.create(blogObject)
+      newBlog.user = user
+      setBlogs(blogs.concat(newBlog))
+      blogFormRef.current.toggleVisibility()
+      setNotification(`Added new blog: "${blogObject.title}" by ${blogObject.author}`)
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+    } catch (exception) {
+      setNotification('Error: Failed to add blog')
       setTimeout(() => {
         setNotification(null)
       }, 5000)
+    }
   }
 
   const newBlogForm = () => (
