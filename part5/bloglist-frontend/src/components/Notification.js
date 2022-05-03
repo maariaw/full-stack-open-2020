@@ -4,12 +4,12 @@ const Notification = ({ message }) => {
   }
 
   const redStyle = {
-    color: "Red"
+    color: 'Red'
   }
   const greenstyle = {
-    color: "Green"
+    color: 'Green'
   }
-  const style = message.includes("Error")
+  const style = message.includes('Error')
     ? redStyle
     : greenstyle
 

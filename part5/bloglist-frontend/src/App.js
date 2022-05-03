@@ -18,9 +18,7 @@ const App = () => {
     blogService
       .getAll()
       .then(blogs => blogs.sort(sortByLikes))
-      .then(blogs =>
-      setBlogs( blogs )
-    )  
+      .then(blogs => setBlogs( blogs ))
   }, [])
 
   useEffect(() => {
@@ -61,9 +59,9 @@ const App = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogsUser')
     setNotification('Logged out')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const addBlog = async (blogObject) => {
@@ -73,9 +71,9 @@ const App = () => {
       setBlogs(blogs.concat(newBlog))
       blogFormRef.current.toggleVisibility()
       setNotification(`Added new blog: "${blogObject.title}" by ${blogObject.author}`)
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     } catch (exception) {
       setNotification('Error: Failed to add blog')
       setTimeout(() => {
@@ -95,20 +93,20 @@ const App = () => {
       <div>
         <label>Username:
           <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
           />
         </label>
       </div>
       <div>
         <label>Password:
           <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
           />
         </label>
       </div>
@@ -140,15 +138,16 @@ const App = () => {
 
   const handleRemove = async (id) => {
     const blogToDelete = blogs.find(b => b.id === id)
-    const confirmText = `
-    Are you sure you want to remove this blog:
-    ${blogToDelete.title} by ${blogToDelete.author}
-    `
+    const confirmText =
+    `Are you sure you want to remove this blog:
+    "${blogToDelete.title}" by ${blogToDelete.author}`
     if (window.confirm(confirmText)) {
       try {
         await blogService.remove(id)
         setBlogs(blogs.filter(b => b.id !== id))
-        setNotification(`Removed blog`)
+        setNotification(
+          `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
+        )
         setTimeout(() => {
           setNotification(null)
         }, 5000)
@@ -190,7 +189,6 @@ const App = () => {
           />
         )}
       </div>
-      
     </div>
   )
 }

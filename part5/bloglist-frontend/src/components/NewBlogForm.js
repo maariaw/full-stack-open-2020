@@ -24,37 +24,36 @@ const NewBlogForm = ({ addNewBlog }) => {
         <div>
           <label>Blog title:
             <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
+              type="text"
+              value={title}
+              name="Title"
+              onChange={({ target }) => setTitle(target.value)}
+            />
           </label>
         </div>
         <div>
           <label>Author:
             <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+              type="text"
+              value={author}
+              name="Author"
+              onChange={({ target }) => setAuthor(target.value)}
+            />
           </label>
         </div>
         <div>
           <label>Blog url:
             <input
-            type="text"
-            value={blogUrl}
-            name="Url"
-            onChange={({ target }) => setBlogUrl(target.value)}
-          />
+              type="text"
+              value={blogUrl}
+              name="Url"
+              onChange={({ target }) => setBlogUrl(target.value)}
+            />
           </label>
         </div>
         <button type="submit">Add blog</button>
       </form>
     </div>
-    
   )
 }
 

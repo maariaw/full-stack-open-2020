@@ -23,11 +23,11 @@ const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
   if (!viewDetails) {
     return (
       <div style={blogStyle}>
-      <p>
-      <b>{blog.title}</b> by {blog.author}
-      <button onClick={toggleDetail} style={buttonStyle}>View</button>
-      </p>
-    </div>
+        <p>
+          <b>{blog.title}</b> by {blog.author}
+          <button onClick={toggleDetail} style={buttonStyle}>View</button>
+        </p>
+      </div>
     )
   }
 
