@@ -38,7 +38,7 @@ const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
         <button onClick={toggleDetail} style={buttonStyle}>Hide</button>
       </p>
       <p>{blog.url}</p>
-      <p>
+      <p data-testid='likes'>
         {blog.likes}
         <button style={buttonStyle} onClick={handleLike}>
             Like
