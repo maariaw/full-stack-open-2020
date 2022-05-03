@@ -56,4 +56,23 @@ describe('<Blog />', () => {
     const likesElement = screen.queryByTestId('likes')
     expect(likesElement).not.toBeNull()
   })
+
+  test('calls event handler twice when pressing "Like" button twice', async () => {
+    const mockHandler = jest.fn()
+
+    render(<Blog
+      blog={blog}
+      handleLike={mockHandler}
+      isCreator={true}
+    />)
+
+    const user = userEvent.setup()
+    const viewButton = screen.getByText('View')
+    await user.click(viewButton)
+    const likeButton = screen.getByText('Like')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
