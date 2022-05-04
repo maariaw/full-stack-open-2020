@@ -46,7 +46,7 @@ const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
       </p>
       <p>{blog.user.name}</p>
       { isCreator &&
-        <button style={buttonStyle} onClick={handleRemove}>
+        <button style={buttonStyle} onClick={handleRemove} data-cy='delete'>
           Remove
         </button>
       }

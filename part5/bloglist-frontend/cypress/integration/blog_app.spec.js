@@ -7,6 +7,12 @@ describe('Blog app', function() {
       password: 'HillSilly'
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user)
+    const otherUser = {
+      username: 'NotCycy',
+      name: 'Cyril Cypress',
+      password: 'HillSilly'
+    }
+    cy.request('POST', 'http://localhost:3003/api/users/', otherUser)
     cy.visit('http://localhost:3000')
   })
 
@@ -79,6 +85,28 @@ describe('Blog app', function() {
         cy.get('@likes').contains('0')
         cy.get('@likes').find('button').click()
         cy.get('@likes').contains('1')
+      })
+
+      it('User can delete a blog they created', function() {
+        cy.contains('Cypress bypasses database')
+          .parent().as('blog')
+        cy.get('@blog').find('button').click()
+        cy.get('@blog').get('[data-cy=delete]').click()
+        cy.visit('http://localhost:3000')
+        cy.get('html').should('not.contain', 'Cypress bypasses database')
+      })
+
+      it.only('User cannot delete a blog someone else created', function() {
+        cy.get('[data-cy=logout]').click()
+        cy.request('POST', 'http://localhost:3003/api/login/', {
+          username: 'NotCycy', password: 'HillSilly'
+        }).then(response => {
+          localStorage.setItem('loggedBlogsUser', JSON.stringify(response.body))
+          cy.visit('http://localhost:3000')
+        })
+        cy.contains('Cypress bypasses database')
+          .parent().find('button').click()
+        cy.get('[data-cy=delete]').should('not.exist')
       })
     })
   })

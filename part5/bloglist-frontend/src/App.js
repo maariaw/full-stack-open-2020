@@ -175,7 +175,7 @@ const App = () => {
       <h2>Blogs</h2>
       <Notification message={notification} />
       <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>Logout</button>
+      <button onClick={handleLogout} data-cy='logout'>Logout</button>
       {newBlogForm()}
       <br/>
       <div>
