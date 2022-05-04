@@ -53,5 +53,33 @@ describe('Blog app', function() {
       cy.visit('http://localhost:3000')
       cy.contains('Cypress can create blogs')
     })
+
+    describe('When a blog exists', function() {
+      beforeEach(function() {
+        cy.request({
+          url: 'http://localhost:3003/api/blogs/',
+          method: 'POST',
+          body: {
+            title: 'Cypress bypasses database',
+            author: 'S. Neaky',
+            url: 'still no websites'
+          },
+          headers: {
+            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogsUser')).token}`
+          }
+        })
+        cy.visit('http://localhost:3000')
+      })
+
+      it('User can like a blog', function() {
+        cy.contains('Cypress bypasses database')
+          .parent().find('button').click()
+        cy.contains('Cypress bypasses database')
+          .parent().get('[data-testid=likes]').as('likes')
+        cy.get('@likes').contains('0')
+        cy.get('@likes').find('button').click()
+        cy.get('@likes').contains('1')
+      })
+    })
   })
 })

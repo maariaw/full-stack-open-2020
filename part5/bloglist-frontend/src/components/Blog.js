@@ -39,7 +39,7 @@ const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
       </p>
       <p>{blog.url}</p>
       <p data-testid='likes'>
-        {blog.likes}
+        Likes: {blog.likes}
         <button style={buttonStyle} onClick={handleLike}>
             Like
         </button>
