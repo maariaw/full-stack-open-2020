@@ -1,18 +1,16 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.createUser({
       username: 'Cycy',
       name: 'Cyril Cypress',
       password: 'HillSilly'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users/', user)
-    const otherUser = {
+    })
+    cy.createUser({
       username: 'NotCycy',
       name: 'Cyril Cypress',
       password: 'HillSilly'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users/', otherUser)
+    })
     cy.visit('http://localhost:3000')
   })
 
@@ -31,7 +29,7 @@ describe('Blog app', function() {
 
     it('fails with wrong credentials', function() {
       cy.get('[data-cy=username]').type('Cycy')
-      cy.get('[data-cy=password]').type('Hillsilly')
+      cy.get('[data-cy=password]').type('notthepassword')
       cy.get('[data-cy=login]').click()
 
       cy.contains('Log in to Blogs application')
@@ -41,12 +39,7 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.request('POST', 'http://localhost:3003/api/login/', {
-        username: 'Cycy', password: 'HillSilly'
-      }).then(response => {
-        localStorage.setItem('loggedBlogsUser', JSON.stringify(response.body))
-        cy.visit('http://localhost:3000')
-      })
+      cy.login({ username: 'Cycy', password: 'HillSilly' })
     })
 
     it('A blog can be created', function() {
@@ -60,28 +53,29 @@ describe('Blog app', function() {
       cy.contains('Cypress can create blogs')
     })
 
-    describe('When a blog exists', function() {
+    describe('When blogs exist', function() {
       beforeEach(function() {
-        cy.request({
-          url: 'http://localhost:3003/api/blogs/',
-          method: 'POST',
-          body: {
-            title: 'Cypress bypasses database',
-            author: 'S. Neaky',
-            url: 'still no websites'
-          },
-          headers: {
-            'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedBlogsUser')).token}`
-          }
+        cy.createBlog({
+          title: 'Cypress bypasses database',
+          author: 'S. Neaky',
+          url: 'still no websites'
         })
-        cy.visit('http://localhost:3000')
+        cy.createBlog({
+          title: 'This will be least liked blog',
+          author: 'W. Orst',
+          url: 'and no website'
+        })
+        cy.createBlog({
+          title: 'This will be most liked blog',
+          author: 'B. Est',
+          url: 'still not a website'
+        })
       })
 
       it('User can like a blog', function() {
         cy.contains('Cypress bypasses database')
           .parent().find('button').click()
-        cy.contains('Cypress bypasses database')
-          .parent().get('[data-testid=likes]').as('likes')
+        cy.get('[data-testid=likes]').as('likes')
         cy.get('@likes').contains('0')
         cy.get('@likes').find('button').click()
         cy.get('@likes').contains('1')
@@ -89,14 +83,13 @@ describe('Blog app', function() {
 
       it('User can delete a blog they created', function() {
         cy.contains('Cypress bypasses database')
-          .parent().as('blog')
-        cy.get('@blog').find('button').click()
-        cy.get('@blog').get('[data-cy=delete]').click()
+          .parent().find('button').click()
+        cy.get('[data-cy=delete]').click()
         cy.visit('http://localhost:3000')
         cy.get('html').should('not.contain', 'Cypress bypasses database')
       })
 
-      it.only('User cannot delete a blog someone else created', function() {
+      it('User cannot delete a blog someone else created', function() {
         cy.get('[data-cy=logout]').click()
         cy.request('POST', 'http://localhost:3003/api/login/', {
           username: 'NotCycy', password: 'HillSilly'

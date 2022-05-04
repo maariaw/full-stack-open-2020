@@ -22,7 +22,7 @@ const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
 
   if (!viewDetails) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} data-cy='blog'>
         <p>
           <b>{blog.title}</b> by {blog.author}
           <button onClick={toggleDetail} style={buttonStyle}>View</button>
@@ -32,7 +32,7 @@ const Blog = ({ blog, handleLike, isCreator, handleRemove }) => {
   }
 
   const details = (
-    <div style={blogStyle}>
+    <div style={blogStyle} data-cy='blog'>
       <p>
         <b>{blog.title}</b> by {blog.author}
         <button onClick={toggleDetail} style={buttonStyle}>Hide</button>
