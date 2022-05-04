@@ -24,9 +24,9 @@ const NewBlogForm = ({ addNewBlog }) => {
         <div>
           <label>Blog title:
             <input
-              type="text"
+              type='text'
               value={title}
-              name="Title"
+              data-cy='title'
               onChange={({ target }) => setTitle(target.value)}
             />
           </label>
@@ -34,9 +34,9 @@ const NewBlogForm = ({ addNewBlog }) => {
         <div>
           <label>Author:
             <input
-              type="text"
+              type='text'
               value={author}
-              name="Author"
+              data-cy='author'
               onChange={({ target }) => setAuthor(target.value)}
             />
           </label>
@@ -44,14 +44,14 @@ const NewBlogForm = ({ addNewBlog }) => {
         <div>
           <label>Blog url:
             <input
-              type="text"
+              type='text'
               value={blogUrl}
-              name="Url"
+              data-cy='url'
               onChange={({ target }) => setBlogUrl(target.value)}
             />
           </label>
         </div>
-        <button type="submit">Add blog</button>
+        <button type='submit' data-cy='createblog'>Add blog</button>
       </form>
     </div>
   )
