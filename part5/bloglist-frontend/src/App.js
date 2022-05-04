@@ -83,7 +83,7 @@ const App = () => {
   }
 
   const newBlogForm = () => (
-    <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
+    <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
       <NewBlogForm addNewBlog={addBlog} />
     </Togglable>
   )
@@ -93,9 +93,9 @@ const App = () => {
       <div>
         <label>Username:
           <input
-            type="text"
+            type='text'
             value={username}
-            name="Username"
+            data-cy='username'
             onChange={({ target }) => setUsername(target.value)}
           />
         </label>
@@ -103,14 +103,14 @@ const App = () => {
       <div>
         <label>Password:
           <input
-            type="password"
+            type='password'
             value={password}
-            name="Password"
+            data-cy='password'
             onChange={({ target }) => setPassword(target.value)}
           />
         </label>
       </div>
-      <button type="submit">Login</button>
+      <button type='submit' data-cy='login'>Login</button>
     </form>
   )
 
