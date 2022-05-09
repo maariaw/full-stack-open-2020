@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   text: 'This is a default notification',
-  visible: false
+  visible: false,
+  lastTimer: null
 }
 
 const notificationSlice = createSlice({
@@ -10,7 +11,12 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     setOn(state, action) {
-      return { text: action.payload, visible: true }
+      clearTimeout(state.lastTimer)
+      return {
+        text: action.payload.text,
+        visible: true,
+        lastTimer: action.payload.timeoutID
+      }
     },
     setOff(state) {
       return {...state, visible: false}
@@ -23,10 +29,10 @@ export const { setOn, setOff } = notificationSlice.actions
 export const setNotification = (text, time) => {
   return async dispatch => {
     const delay = time * 1000
-    dispatch(setOn(text))
-    setTimeout(() => {
+    const timeoutID = setTimeout(() => {
       dispatch(setOff())
     }, delay)
+    dispatch(setOn({ text, timeoutID }))
   }
 }
 
