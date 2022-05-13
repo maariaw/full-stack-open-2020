@@ -55,7 +55,7 @@ const Anecdote = ({ anecdotes }) => {
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
       <p>has {anecdote.votes} votes</p>
-      <p>for more ifo see <a href={anecdote.info}>{anecdote.info}</a></p>
+      <p>for more info see <a href={anecdote.info}>{anecdote.info}</a></p>
     </div>
   )
 }
@@ -84,9 +84,9 @@ const Footer = () => (
 
 const CreateNew = (props) => {
 
-  const { reset: resetContent, ...content } = useField('text')
-  const { reset: resetAuthor, ...author } = useField('text')
-  const { reset: resetInfo, ...info } = useField('text')
+  const [resetContent, content] = useField('text')
+  const [resetAuthor, author] = useField('text')
+  const [resetInfo, info] = useField('text')
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
