@@ -18,10 +18,28 @@ const useField = (type) => {
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  // ...
+  useEffect(() => {
+    axios
+      .get(baseUrl)
+      .then(response => {
+        setResources(response.data)
+      })
+      .catch(error => {
+        console.log('Error occurred: ', error)
+        setResources([])
+      })
+  }, [baseUrl])
 
   const create = (resource) => {
-    // ...
+    axios
+      .post(baseUrl, resource)
+      .then(response => {
+        const newResources = resources.concat(response.data)
+        setResources(newResources)
+      })
+      .catch(error => {
+        console.log('Error occurred: ', error)
+      })
   }
 
   const service = {
