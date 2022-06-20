@@ -5,14 +5,21 @@ import NewBlogForm from './components/NewBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
+import {
+  setNotification,
+  nullNotification,
+} from './reducers/notificationReducer'
+import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
   const blogFormRef = useRef()
+
+  const dispatch = useDispatch()
+  const notification = useSelector((state) => state)
 
   useEffect(() => {
     blogService
@@ -47,9 +54,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotification('Error: Username or password incorrect')
+      dispatch(setNotification('Error: Username or password incorrect'))
       setTimeout(() => {
-        setNotification(null)
+        dispatch(nullNotification())
       }, 5000)
     }
   }
@@ -57,9 +64,9 @@ const App = () => {
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogsUser')
-    setNotification('Logged out')
+    dispatch(setNotification('Logged out'))
     setTimeout(() => {
-      setNotification(null)
+      dispatch(nullNotification())
     }, 5000)
   }
 
@@ -69,16 +76,18 @@ const App = () => {
       newBlog.user = user
       setBlogs(blogs.concat(newBlog))
       blogFormRef.current.toggleVisibility()
-      setNotification(
-        `Added new blog: "${blogObject.title}" by ${blogObject.author}`
+      dispatch(
+        setNotification(
+          `Added new blog: "${blogObject.title}" by ${blogObject.author}`
+        )
       )
       setTimeout(() => {
-        setNotification(null)
+        dispatch(nullNotification())
       }, 5000)
     } catch (exception) {
-      setNotification('Error: Failed to add blog')
+      dispatch(setNotification('Error: Failed to add blog'))
       setTimeout(() => {
-        setNotification(null)
+        dispatch(nullNotification())
       }, 5000)
     }
   }
@@ -134,9 +143,9 @@ const App = () => {
       newBlogs.sort(sortByLikes)
       setBlogs(newBlogs)
     } catch (exception) {
-      setNotification('Error: Failed to add like')
+      dispatch(setNotification('Error: Failed to add like'))
       setTimeout(() => {
-        setNotification(null)
+        dispatch(nullNotification())
       }, 5000)
     }
   }
@@ -149,16 +158,18 @@ const App = () => {
       try {
         await blogService.remove(id)
         setBlogs(blogs.filter((b) => b.id !== id))
-        setNotification(
-          `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
+        dispatch(
+          setNotification(
+            `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
+          )
         )
         setTimeout(() => {
-          setNotification(null)
+          dispatch(nullNotification())
         }, 5000)
       } catch (exception) {
-        setNotification('Error: Failed to remove blog')
+        dispatch(setNotification('Error: Failed to remove blog'))
         setTimeout(() => {
-          setNotification(null)
+          dispatch(nullNotification())
         }, 5000)
       }
     }
