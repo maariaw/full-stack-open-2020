@@ -9,24 +9,25 @@ import {
   setNotification,
   nullNotification,
 } from './reducers/notificationReducer'
+import { setBlogs, appendBlog } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
 
   const dispatch = useDispatch()
-  const notification = useSelector((state) => state)
+  const notification = useSelector((state) => state.notification)
+  const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
     blogService
       .getAll()
       .then((blogs) => blogs.sort(sortByLikes))
-      .then((blogs) => setBlogs(blogs))
-  }, [])
+      .then((blogs) => dispatch(setBlogs(blogs)))
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogsUser')
@@ -74,7 +75,7 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blogObject)
       newBlog.user = user
-      setBlogs(blogs.concat(newBlog))
+      dispatch(appendBlog(newBlog))
       blogFormRef.current.toggleVisibility()
       dispatch(
         setNotification(
