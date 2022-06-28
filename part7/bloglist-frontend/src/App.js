@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import NewBlogForm from './components/NewBlogForm'
@@ -19,8 +19,6 @@ import { setUser } from './reducers/userReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const blogFormRef = useRef()
 
   const dispatch = useDispatch()
@@ -43,6 +41,8 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
+    const username = event.target.username.value
+    const password = event.target.password.value
     try {
       const user = await loginService.login({
         username,
@@ -53,8 +53,6 @@ const App = () => {
 
       blogService.setToken(user.token)
       dispatch(setUser(user))
-      setUsername('')
-      setPassword('')
     } catch (exception) {
       dispatch(setNotification('Error: Username or password incorrect'))
       setTimeout(() => {
@@ -103,23 +101,13 @@ const App = () => {
       <div>
         <label>
           Username:
-          <input
-            type='text'
-            value={username}
-            data-cy='username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
+          <input type='text' name='username' data-cy='username' />
         </label>
       </div>
       <div>
         <label>
           Password:
-          <input
-            type='password'
-            value={password}
-            data-cy='password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
+          <input type='password' name='password' data-cy='password' />
         </label>
       </div>
       <button type='submit' data-cy='login'>
