@@ -10,10 +10,10 @@ import {
   nullNotification,
 } from './reducers/notificationReducer'
 import {
-  setBlogs,
-  appendBlog,
+  initializeBlogs,
   likeBlog,
-  removeBlog,
+  deleteBlog,
+  createBlog,
 } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -28,7 +28,7 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)))
+    dispatch(initializeBlogs())
   }, [dispatch])
 
   useEffect(() => {
@@ -73,9 +73,7 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create(blogObject)
-      newBlog.user = user
-      dispatch(appendBlog(newBlog))
+      dispatch(createBlog(blogObject, user))
       blogFormRef.current.toggleVisibility()
       dispatch(
         setNotification(
@@ -130,10 +128,7 @@ const App = () => {
   )
 
   const giveLike = async (id) => {
-    const blogToLike = blogs.find((b) => b.id === id)
-    const change = { likes: blogToLike.likes + 1 }
     try {
-      await blogService.update(id, change)
       dispatch(likeBlog(id))
     } catch (exception) {
       dispatch(setNotification('Error: Failed to add like'))
@@ -149,8 +144,7 @@ const App = () => {
     "${blogToDelete.title}" by ${blogToDelete.author}`
     if (window.confirm(confirmText)) {
       try {
-        await blogService.remove(id)
-        dispatch(removeBlog(id))
+        dispatch(deleteBlog(id))
         dispatch(
           setNotification(
             `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
