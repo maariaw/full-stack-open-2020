@@ -9,7 +9,12 @@ import {
   setNotification,
   nullNotification,
 } from './reducers/notificationReducer'
-import { setBlogs, appendBlog } from './reducers/blogReducer'
+import {
+  setBlogs,
+  appendBlog,
+  likeBlog,
+  removeBlog,
+} from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
@@ -23,10 +28,7 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => blogs.sort(sortByLikes))
-      .then((blogs) => dispatch(setBlogs(blogs)))
+    blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)))
   }, [dispatch])
 
   useEffect(() => {
@@ -37,8 +39,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const sortByLikes = (a, b) => b.likes - a.likes
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -130,19 +130,11 @@ const App = () => {
   )
 
   const giveLike = async (id) => {
-    const indexOfBlogToLike = blogs.findIndex((b) => b.id === id)
-    const blogToLike = blogs[indexOfBlogToLike]
-    const newLikes = blogToLike.likes + 1
-    const change = { likes: newLikes }
+    const blogToLike = blogs.find((b) => b.id === id)
+    const change = { likes: blogToLike.likes + 1 }
     try {
       await blogService.update(id, change)
-      const newBlogs = [
-        ...blogs.slice(0, indexOfBlogToLike),
-        { ...blogToLike, likes: newLikes },
-        ...blogs.slice(indexOfBlogToLike + 1),
-      ]
-      newBlogs.sort(sortByLikes)
-      setBlogs(newBlogs)
+      dispatch(likeBlog(id))
     } catch (exception) {
       dispatch(setNotification('Error: Failed to add like'))
       setTimeout(() => {
@@ -158,7 +150,7 @@ const App = () => {
     if (window.confirm(confirmText)) {
       try {
         await blogService.remove(id)
-        setBlogs(blogs.filter((b) => b.id !== id))
+        dispatch(removeBlog(id))
         dispatch(
           setNotification(
             `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
