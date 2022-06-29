@@ -18,7 +18,7 @@ const Blogs = () => {
   const blogFormRef = useRef()
   const dispatch = useDispatch()
   const blogs = useSelector((state) => state.blogs)
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.logged)
 
   useEffect(() => {
     dispatch(initializeBlogs())

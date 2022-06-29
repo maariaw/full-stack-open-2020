@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Routes, Route, Link } from 'react-router-dom'
 import Blogs from './components/Blogs'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
@@ -7,20 +9,20 @@ import {
   setNotification,
   nullNotification,
 } from './reducers/notificationReducer'
-import { setUser } from './reducers/userReducer'
-import { useSelector, useDispatch } from 'react-redux'
+import { setLoggedUser } from './reducers/loggedReducer'
+import Users from './components/Users'
 
 const App = () => {
   const dispatch = useDispatch()
   const notification = useSelector((state) => state.notification)
   const blogs = useSelector((state) => state.blogs)
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.logged)
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogsUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      dispatch(setUser(user))
+      dispatch(setLoggedUser(user))
       blogService.setToken(user.token)
     }
   }, [dispatch])
@@ -38,7 +40,7 @@ const App = () => {
       window.localStorage.setItem('loggedBlogsUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
-      dispatch(setUser(user))
+      dispatch(setLoggedUser(user))
     } catch (exception) {
       dispatch(setNotification('Error: Username or password incorrect'))
       setTimeout(() => {
@@ -48,7 +50,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    dispatch(setUser(null))
+    dispatch(setLoggedUser(null))
     window.localStorage.removeItem('loggedBlogsUser')
     dispatch(setNotification('Logged out'))
     setTimeout(() => {
@@ -86,15 +88,31 @@ const App = () => {
     )
   }
 
+  const padding = {
+    padding: 5,
+  }
+
   return (
     <div>
       <h2>Blogs</h2>
+      <div>
+        <Link style={padding} to='/'>
+          Blogs
+        </Link>
+        <Link style={padding} to='/users'>
+          Users
+        </Link>
+      </div>
       <Notification message={notification} />
       <p>{user.name} logged in</p>
       <button onClick={handleLogout} data-cy='logout'>
         Logout
       </button>
-      <Blogs />
+
+      <Routes>
+        <Route path='/users' element={<Users />} />
+        <Route path='/' element={<Blogs />} />
+      </Routes>
     </div>
   )
 }
