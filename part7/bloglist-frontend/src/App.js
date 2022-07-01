@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import Blogs from './components/Blogs'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
@@ -9,14 +9,20 @@ import {
   setNotification,
   nullNotification,
 } from './reducers/notificationReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import { setLoggedUser } from './reducers/loggedReducer'
 import Users from './components/Users'
+import User from './components/User'
 
 const App = () => {
   const dispatch = useDispatch()
   const notification = useSelector((state) => state.notification)
-  const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.logged)
+  const users = useSelector((state) => state.users)
+
+  useEffect(() => {
+    dispatch(initializeUsers())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogsUser')
@@ -78,6 +84,13 @@ const App = () => {
     </form>
   )
 
+  const match = useMatch('/users/:id')
+  const userByID = match ? users.find((u) => u.id === match.params.id) : null
+
+  const padding = {
+    padding: 5,
+  }
+
   if (user === null) {
     return (
       <div>
@@ -86,10 +99,6 @@ const App = () => {
         {loginForm()}
       </div>
     )
-  }
-
-  const padding = {
-    padding: 5,
   }
 
   return (
@@ -110,7 +119,8 @@ const App = () => {
       </button>
 
       <Routes>
-        <Route path='/users' element={<Users />} />
+        <Route path='/users/:id' element={<User userByID={userByID} />} />
+        <Route path='/users' element={<Users users={users} />} />
         <Route path='/' element={<Blogs />} />
       </Routes>
     </div>
