@@ -10,18 +10,25 @@ import {
   nullNotification,
 } from './reducers/notificationReducer'
 import { initializeUsers } from './reducers/usersReducer'
+import { initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 import { setLoggedUser } from './reducers/loggedReducer'
 import Users from './components/Users'
 import User from './components/User'
+import Blogview from './components/Blogview'
 
 const App = () => {
   const dispatch = useDispatch()
   const notification = useSelector((state) => state.notification)
   const user = useSelector((state) => state.logged)
+  const blogs = useSelector((state) => state.blogs)
   const users = useSelector((state) => state.users)
 
   useEffect(() => {
     dispatch(initializeUsers())
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeBlogs())
   }, [dispatch])
 
   useEffect(() => {
@@ -84,8 +91,56 @@ const App = () => {
     </form>
   )
 
-  const match = useMatch('/users/:id')
-  const userByID = match ? users.find((u) => u.id === match.params.id) : null
+  const giveLike = async (id) => {
+    try {
+      dispatch(likeBlog(id))
+    } catch (exception) {
+      dispatch(setNotification('Error: Failed to add like'))
+      setTimeout(() => {
+        dispatch(nullNotification())
+      }, 5000)
+    }
+  }
+
+  const handleRemove = async (id) => {
+    const blogToDelete = await blogs.find((b) => b.id === id)
+    const confirmText = `Are you sure you want to remove this blog:
+    "${blogToDelete.title}" by ${blogToDelete.author}`
+    if (window.confirm(confirmText)) {
+      try {
+        dispatch(deleteBlog(id))
+        dispatch(
+          setNotification(
+            `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
+          )
+        )
+        setTimeout(() => {
+          dispatch(nullNotification())
+        }, 5000)
+      } catch (exception) {
+        dispatch(setNotification('Error: Failed to remove blog'))
+        setTimeout(() => {
+          dispatch(nullNotification())
+        }, 5000)
+      }
+    }
+  }
+
+  const userMatch = useMatch('/users/:id')
+  const userByID = userMatch
+    ? users.find((u) => u.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useMatch('/blogs/:id')
+  const blogByID = blogMatch
+    ? blogs.find((b) => b.id === blogMatch.params.id)
+    : null
+  let isCreator
+  if (blogByID && user) {
+    isCreator = blogByID.user.username === user.username
+  } else {
+    isCreator = false
+  }
 
   const padding = {
     padding: 5,
@@ -119,6 +174,17 @@ const App = () => {
       </button>
 
       <Routes>
+        <Route
+          path='/blogs/:id'
+          element={
+            <Blogview
+              blogByID={blogByID}
+              giveLike={giveLike}
+              isCreator={isCreator}
+              handleRemove={handleRemove}
+            />
+          }
+        />
         <Route path='/users/:id' element={<User userByID={userByID} />} />
         <Route path='/users' element={<Users users={users} />} />
         <Route path='/' element={<Blogs />} />

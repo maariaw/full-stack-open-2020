@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import NewBlogForm from './NewBlogForm'
 import Togglable from './Togglable'
-import Blog from './Blog'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   initializeBlogs,
@@ -13,6 +12,7 @@ import {
   setNotification,
   nullNotification,
 } from '../reducers/notificationReducer'
+import { Link } from 'react-router-dom'
 
 const Blogs = () => {
   const blogFormRef = useRef()
@@ -85,19 +85,23 @@ const Blogs = () => {
     </Togglable>
   )
 
+  const blogStyle = {
+    paddingTop: 5,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+  }
+
   return (
     <div>
       {newBlogForm()}
       <br />
       <div>
         {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={() => giveLike(blog.id)}
-            isCreator={user.username === blog.user.username}
-            handleRemove={() => handleRemove(blog.id)}
-          />
+          <div key={blog.id} style={blogStyle} data-cy='blog'>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author}
+          </div>
         ))}
       </div>
     </div>
