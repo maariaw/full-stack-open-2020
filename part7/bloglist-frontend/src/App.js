@@ -15,6 +15,7 @@ import { setLoggedUser } from './reducers/loggedReducer'
 import Users from './components/Users'
 import User from './components/User'
 import Blogview from './components/Blogview'
+import Navigation from './components/Navigation'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -142,10 +143,6 @@ const App = () => {
     isCreator = false
   }
 
-  const padding = {
-    padding: 5,
-  }
-
   if (user === null) {
     return (
       <div>
@@ -158,20 +155,9 @@ const App = () => {
 
   return (
     <div>
+      <Navigation user={user} logout={handleLogout} />
       <h2>Blogs</h2>
-      <div>
-        <Link style={padding} to='/'>
-          Blogs
-        </Link>
-        <Link style={padding} to='/users'>
-          Users
-        </Link>
-      </div>
       <Notification message={notification} />
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogout} data-cy='logout'>
-        Logout
-      </button>
 
       <Routes>
         <Route

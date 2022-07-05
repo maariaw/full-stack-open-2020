@@ -2,12 +2,7 @@ import { useEffect, useRef } from 'react'
 import NewBlogForm from './NewBlogForm'
 import Togglable from './Togglable'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  initializeBlogs,
-  likeBlog,
-  deleteBlog,
-  createBlog,
-} from '../reducers/blogReducer'
+import { initializeBlogs, createBlog } from '../reducers/blogReducer'
 import {
   setNotification,
   nullNotification,
@@ -41,41 +36,6 @@ const Blogs = () => {
       setTimeout(() => {
         dispatch(nullNotification())
       }, 5000)
-    }
-  }
-
-  const giveLike = async (id) => {
-    try {
-      dispatch(likeBlog(id))
-    } catch (exception) {
-      dispatch(setNotification('Error: Failed to add like'))
-      setTimeout(() => {
-        dispatch(nullNotification())
-      }, 5000)
-    }
-  }
-
-  const handleRemove = async (id) => {
-    const blogToDelete = blogs.find((b) => b.id === id)
-    const confirmText = `Are you sure you want to remove this blog:
-    "${blogToDelete.title}" by ${blogToDelete.author}`
-    if (window.confirm(confirmText)) {
-      try {
-        dispatch(deleteBlog(id))
-        dispatch(
-          setNotification(
-            `Removed blog "${blogToDelete.title}" by ${blogToDelete.author}`
-          )
-        )
-        setTimeout(() => {
-          dispatch(nullNotification())
-        }, 5000)
-      } catch (exception) {
-        dispatch(setNotification('Error: Failed to remove blog'))
-        setTimeout(() => {
-          dispatch(nullNotification())
-        }, 5000)
-      }
     }
   }
 
