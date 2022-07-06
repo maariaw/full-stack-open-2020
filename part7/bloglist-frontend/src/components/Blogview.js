@@ -19,7 +19,7 @@ const Blogview = ({ blogByID, giveLike, isCreator, handleRemove }) => {
           Like
         </button>
       </p>
-      <p>{blogByID.user.name}</p>
+      <p>Added by {blogByID.user.name}</p>
       {isCreator && (
         <button
           style={buttonStyle}
@@ -29,6 +29,12 @@ const Blogview = ({ blogByID, giveLike, isCreator, handleRemove }) => {
           Remove
         </button>
       )}
+      <h4>Comments</h4>
+      <ul>
+        {blogByID.comments.map((comment) => (
+          <li key={comment.id}>{comment.content}</li>
+        ))}
+      </ul>
     </div>
   )
 }

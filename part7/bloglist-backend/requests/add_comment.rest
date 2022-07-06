@@ -1,2 +1,7 @@
-DELETE http://localhost:3003/api/blogs/62c5a8993ab6c164c30a060a
+POST http://localhost:3003/api/blogs/62c588563ab6c164c30a0608/comments
+Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlc3RlciIsImlkIjoiNjI2NjQ3ZjNjZDBmY2MzYjlkOTJiMzdlIiwiaWF0IjoxNjUwODcwMjkyfQ.NhZRV-FEhpQOrxdac0LJD4Gg3lXlKJ6BhbFDpweWgdY
+
+{
+"content": "I finally got it to work!"
+}

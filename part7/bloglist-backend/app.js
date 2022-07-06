@@ -9,7 +9,12 @@ const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const mongoose = require('mongoose')
 
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(config.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+})
 
 app.use(cors())
 app.use(express.json())
