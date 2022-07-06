@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJlc3RlciIsImlkIjoiNjI2NjQ3ZjNjZDBmY2MzYjlkOTJiMzdlIiwiaWF0IjoxNjUwODcwMjkyfQ.NhZRV-FEhpQOrxdac0LJD4Gg3lXlKJ6BhbFDpweWgdY
+
+{
+  "title": "VSCode REST is pretty cool",
+  "author": "Opie Honesty",
+  "url": "this is a website",
+  "likes": 1
+}
