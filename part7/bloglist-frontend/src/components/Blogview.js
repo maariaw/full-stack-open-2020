@@ -1,3 +1,5 @@
+import Comments from './Comments'
+
 const Blogview = ({ blogByID, giveLike, isCreator, handleRemove }) => {
   const buttonStyle = {
     marginLeft: 10,
@@ -29,12 +31,7 @@ const Blogview = ({ blogByID, giveLike, isCreator, handleRemove }) => {
           Remove
         </button>
       )}
-      <h4>Comments</h4>
-      <ul>
-        {blogByID.comments.map((comment) => (
-          <li key={comment.id}>{comment.content}</li>
-        ))}
-      </ul>
+      <Comments blog={blogByID} />
     </div>
   )
 }

@@ -67,4 +67,16 @@ export const deleteBlog = (id) => {
   }
 }
 
+export const commentBlog = (id, comment) => {
+  return async (dispatch, getState) => {
+    comment = await blogService.addComment(id, comment)
+    const blogToComment = getState().blogs.find((b) => b.id === id)
+    const commentedBlog = {
+      ...blogToComment,
+      comments: blogToComment.comments.concat(comment),
+    }
+    dispatch(updateBlog(commentedBlog))
+  }
+}
+
 export default blogSlice.reducer
