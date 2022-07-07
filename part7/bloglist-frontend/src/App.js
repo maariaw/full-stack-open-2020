@@ -16,6 +16,7 @@ import Users from './components/Users'
 import User from './components/User'
 import Blogview from './components/Blogview'
 import Navigation from './components/Navigation'
+import Header from './components/Header'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -155,8 +156,7 @@ const App = () => {
 
   return (
     <div>
-      <Navigation user={user} logout={handleLogout} />
-      <h2>Blogs</h2>
+      <Header user={user} logout={handleLogout} />
       <Notification message={notification} />
 
       <Routes>

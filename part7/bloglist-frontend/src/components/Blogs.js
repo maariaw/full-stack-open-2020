@@ -8,6 +8,8 @@ import {
   nullNotification,
 } from '../reducers/notificationReducer'
 import { Link } from 'react-router-dom'
+import { StyledBlogs } from './styles/Blogs.styled'
+import { StyledBlogview } from './styles/Blogview.styled'
 
 const Blogs = () => {
   const blogFormRef = useRef()
@@ -45,26 +47,25 @@ const Blogs = () => {
     </Togglable>
   )
 
-  const blogStyle = {
-    paddingTop: 5,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
   return (
-    <div>
+    <StyledBlogs>
       {newBlogForm()}
       <br />
       <div>
         {blogs.map((blog) => (
-          <div key={blog.id} style={blogStyle} data-cy='blog'>
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> by {blog.author}
-          </div>
+          <StyledBlogview
+            as={Link}
+            to={`/blogs/${blog.id}`}
+            key={blog.id}
+            data-cy='blog'
+          >
+            <strong>{blog.title}</strong>
+            <br />
+            by {blog.author}
+          </StyledBlogview>
         ))}
       </div>
-    </div>
+    </StyledBlogs>
   )
 }
 
