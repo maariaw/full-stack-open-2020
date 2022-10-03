@@ -7,3 +7,12 @@ mutation ($title: String!, $author: String!, $published: Int!, $genres: [String!
   }
 }
 `
+
+export const EDIT_AUTHOR = gql`
+mutation ($name: String!, $setBornTo: Int!) {
+  editAuthor(name: $name, setBornTo: $setBornTo) {
+    name
+    born
+  }
+}
+`
