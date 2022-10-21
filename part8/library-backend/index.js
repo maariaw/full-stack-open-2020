@@ -97,6 +97,7 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
+      console.log("At the resolver")
       if (!currentUser) {
         throw new AuthenticationError('Must be logged in to add a book')
       }
