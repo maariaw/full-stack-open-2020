@@ -56,7 +56,12 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      // Tähän toteutetaan parametreillä hakeminen
+      if (args.genre) {
+        const genreBooks = await Book
+          .find( { genres: { $in: [args.genre] } } )
+          .populate('author')
+        return genreBooks
+      }
       const books = await Book.find({}).populate('author')
       return books
     },
@@ -73,19 +78,16 @@ const resolvers = {
         author = await newAuthor.save()
       }
       const book = new Book({ ...args, author: author})
-      console.log(book)
       return book.save()
     },
-    // editAuthor: (root, args) => {
-    //   const author = authors.find(a => a.name === args.name)
-    //   if (!author) {
-    //     return null
-    //   }
-
-    //   const updatedAuthor = { ...author, born: args.setBornTo }
-    //   authors = authors.map(a => a.name === args.name ? updatedAuthor : a)
-    //   return updatedAuthor
-    // }
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name })
+      if (!author) {
+        return null
+      }
+      author.born = args.setBornTo
+      return author.save()
+    }
   },
 }
 
