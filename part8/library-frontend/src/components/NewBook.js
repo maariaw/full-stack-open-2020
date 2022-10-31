@@ -29,11 +29,11 @@ const NewBook = (props) => {
         genres
       },
     })
-    // setTitle('')
-    // setPublished('')
-    // setAuthor('')
-    // setGenres([])
-    // setGenre('')
+    setTitle('')
+    setPublished('')
+    setAuthor('')
+    setGenres([])
+    setGenre('')
   }
 
   const addGenre = () => {
