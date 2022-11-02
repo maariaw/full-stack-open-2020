@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useApolloClient } from '@apollo/client'
 import { LOGIN } from '../mutations'
 
 const Login = ({ show, token, setToken }) => {
@@ -7,12 +7,14 @@ const Login = ({ show, token, setToken }) => {
   const [password, setPassword] = useState('')
 
   const [ login, result ] = useMutation(LOGIN)
+  const client = useApolloClient()
 
   useEffect(() => {
     if ( result.data ) {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('library-user-token', token)
+      client.resetStore()
     }
   }, [result.data]) // eslint-disable-line
 

@@ -22,3 +22,12 @@ query booksByGenre($genre: String) {
   }
 }
 `
+
+export const ME = gql`
+query {
+  me {
+    username
+    favouriteGenre
+  }
+}
+`
