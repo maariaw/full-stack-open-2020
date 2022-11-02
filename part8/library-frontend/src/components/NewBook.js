@@ -14,6 +14,14 @@ const NewBook = (props) => {
     refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]
   })
 
+  if (!props.token && ((title !== '') || (author !== '') || (published !== '') || (genre !== '') || (genres.length !== 0))) {
+    setTitle('')
+    setAuthor('')
+    setPublished('')
+    setGenres([])
+    setGenre('')
+  }
+
   if (!props.show) {
     return null
   }

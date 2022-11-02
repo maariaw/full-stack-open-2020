@@ -11,6 +11,10 @@ const Books = (props) => {
     skip: genre === 'all'
   })
 
+  if (!props.token && genre !== 'all') {
+    setGenre('all')
+  }
+
   if (!props.show) {
     return null
   }

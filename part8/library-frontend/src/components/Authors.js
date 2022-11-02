@@ -13,6 +13,11 @@ const Authors = (props) => {
     refetchQueries: [ { query: ALL_AUTHORS } ]
   })
 
+  if (!props.token && (name || year)) {
+    setName('')
+    setYear('')
+  }
+
   if (!props.show) {
     return null
   }

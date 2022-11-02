@@ -41,9 +41,9 @@ const App = () => {
 
       <Authors show={page === 'authors'} token={token} />
 
-      <Books show={page === 'books'} />
+      <Books show={page === 'books'} token={token} />
 
-      <NewBook show={page === 'add'} />
+      <NewBook show={page === 'add'} token={token} />
 
       <Recommendations show={page === 'recommendations'} />
 
