@@ -11,7 +11,10 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([])
 
   const [ addBook ] = useMutation(ADD_BOOK, {
-    refetchQueries: [ { query: ALL_AUTHORS }, { query: ALL_BOOKS } ]
+    refetchQueries: [
+      { query: ALL_AUTHORS },
+      { query: ALL_BOOKS }
+    ]
   })
 
   if (!props.token && ((title !== '') || (author !== '') || (published !== '') || (genre !== '') || (genres.length !== 0))) {
@@ -28,7 +31,6 @@ const NewBook = (props) => {
 
   const submit = async (event) => {
     event.preventDefault()
-    console.log(title, author, published, genres)
     addBook({
       variables: {
         title,

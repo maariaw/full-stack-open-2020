@@ -8,7 +8,8 @@ const Books = (props) => {
   const allBooks = useQuery(ALL_BOOKS)
   const genreBooks = useQuery(ALL_BOOKS, {
     variables: { genre },
-    skip: genre === 'all'
+    skip: genre === 'all',
+    fetchPolicy: 'no-cache'
   })
 
   if (!props.token && genre !== 'all') {
