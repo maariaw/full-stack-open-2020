@@ -41,7 +41,7 @@ const Books = (props) => {
   return (
     <div>
       <h2>books</h2>
-
+      {props.token &&
       <div>
         Show:
         <Select
@@ -50,7 +50,7 @@ const Books = (props) => {
           options={options}
         />
       </div>
-
+      }
       <table>
         <tbody>
           <tr>
