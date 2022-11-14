@@ -47,6 +47,7 @@ const resolvers = {
             invalidArgs: args,
           })
         }
+        pubsub.publish('AUTHOR_ADDED', { authorAdded: newAuthor })
       }
       const book = new Book({ ...args, author: author})
       try {
@@ -102,6 +103,9 @@ const resolvers = {
   Subscription: {
     bookAdded: {
       subscribe: () => pubsub.asyncIterator('BOOK_ADDED')
+    },
+    authorAdded: {
+      subscribe: () => pubsub.asyncIterator('AUTHOR_ADDED')
     }
   }
 }

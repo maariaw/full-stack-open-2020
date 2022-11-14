@@ -10,12 +10,7 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [ addBook ] = useMutation(ADD_BOOK, {
-    refetchQueries: [
-      { query: ALL_AUTHORS },
-      { query: ALL_BOOKS }
-    ]
-  })
+  const [ addBook ] = useMutation(ADD_BOOK)
 
   if (!props.token && ((title !== '') || (author !== '') || (published !== '') || (genre !== '') || (genres.length !== 0))) {
     setTitle('')

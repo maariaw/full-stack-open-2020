@@ -40,6 +40,20 @@ export const BOOK_ADDED = gql`
   subscription {
     bookAdded {
       title
+      author {
+        name
+      }
+      published
+      genres
+    }
+  }
+`
+
+export const AUTHOR_ADDED = gql`
+  subscription {
+    authorAdded {
+      name
+      born
     }
   }
 `

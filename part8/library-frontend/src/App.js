@@ -1,5 +1,4 @@
-import { BOOK_ADDED } from './mutations'
-
+import { BOOK_ADDED, AUTHOR_ADDED } from './mutations'
 import { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
@@ -7,6 +6,7 @@ import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommendations from './components/Recommendations'
 import { useApolloClient, useSubscription } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
@@ -15,7 +15,23 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      alert("A new book was added")
+      const addedBook = data.data.bookAdded
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook)
+        }
+      })
+    }
+  })
+
+  useSubscription(AUTHOR_ADDED, {
+    onData: ({ data }) => {
+      const addedAuthor = data.data.authorAdded
+      client.cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        return {
+          allAuthors: allAuthors.concat(addedAuthor)
+        }
+      })
     }
   })
 
